@@ -18,7 +18,7 @@ export default function Error404() {
                                 We suggest that you return to home page.
                             </p>
                             {/* Button */}
-                            <a className="btn btn-dark" href="index.html">
+                            <a className="btn btn-dark" href="/">
                                 Go to Homepage
                             </a>
                         </div>

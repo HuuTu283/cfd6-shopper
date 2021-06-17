@@ -1,38 +1,47 @@
-import { LOGIN, LOGOUT, REGISTER, UPDATE } from '../type';
+import { LOGIN, LOGOUT, REGISTER, UPDATE, ERROR } from '../type';
 
 import reduxToolkit from "../../core/reduxToolkit"
 
 
 let initState = {
     login: JSON.parse(localStorage.getItem('login')),
-    statusRegister: "",
+    status: '',
+    statusRegister: '',
 
 }
 
 export default function authReducer(state = initState, action) {
 
     switch (action.type) {
-        case LOGIN:
+        case ERROR:
+            return {
+                ...state,
+                status: action.payload
+            }
 
+        case REGISTER:
+            return {
+                ...state,
+                statusRegister: action.payload
+            }
+
+        case LOGIN:
             localStorage.setItem('login', JSON.stringify(action.payload))
+            localStorage.setItem("token", JSON.stringify(action.payload.token))
             return {
                 ...state,
                 login: action.payload
             }
-        case LOGOUT:
 
+        case LOGOUT:
             localStorage.setItem('login', false)
+            localStorage.removeItem("token");
             return {
                 ...state,
                 login: false
 
             }
-        case REGISTER:
 
-            return {
-                ...state,
-                statusRegister: action.payload
-            }
         case UPDATE:
             localStorage.setItem('login', JSON.stringify(action.payload))
             return {

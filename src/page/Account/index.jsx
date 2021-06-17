@@ -12,11 +12,12 @@ import PaymentMethods from './components/PaymentMethods';
 import PaymentEdit from './components/PaymentEdit';
 import { useDispatch } from 'react-redux';
 import { logoutAction } from "../../redux/actions/authAction";
+import { RouteWithSubRoutes } from "core/routerConfig";
 
 
 
 
-export default function AccountPage() {
+export default function AccountPage({ routes }) {
     let { path } = useRouteMatch()
     let dispatch = useDispatch()
 
@@ -66,7 +67,12 @@ export default function AccountPage() {
 
 
                         <Switch>
-                            <Route exact path={`${path}/don-hang-da-dat`} component={Orders} />
+                            {routes.map((route, i) => (
+                                <RouteWithSubRoutes key={i} {...route} />
+                            ))}
+
+
+                            {/* <Route exact path={`${path}/don-hang-da-dat`} component={Orders} />
                             <Route path={`${path}/don-hang-da-dat/chi-tiet`} component={OrderDetails} />
 
                             <Route path={`${path}/yeu-thich`} component={Wishlist} />
@@ -76,7 +82,7 @@ export default function AccountPage() {
                             <Route path={`${path}/dia-chi/chinh-sua`} component={AddressEdit} />
 
                             <Route exact path={`${path}/hinh-thuc-thanh-toan`} component={PaymentMethods} />
-                            <Route path={`${path}/hinh-thuc-thanh-toan/chinh-sua`} component={PaymentEdit} />
+                            <Route path={`${path}/hinh-thuc-thanh-toan/chinh-sua`} component={PaymentEdit} /> */}
                         </Switch>
                     </div>
                 </div>

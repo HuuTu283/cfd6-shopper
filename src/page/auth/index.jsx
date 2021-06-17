@@ -5,17 +5,14 @@ export default function AuthPage() {
 
 
     return (
-        <>
-            {/* CONTENT */}
-            <section className="py-12 bg-light" >
-                <div className="container">
-                    <div className="row">
-                        <SignIn />
-                        <Register />
-
-                    </div>
+        /* CONTENT */
+        <section className="py-12 bg-light" >
+            <div className="container">
+                <div className="row">
+                    <SignIn />
+                    <Register />
                 </div>
-            </section>
-        </>
+            </div>
+        </section>
     )
 }

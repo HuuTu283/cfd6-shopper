@@ -1,93 +1,66 @@
-import useValidateForm from "../../../core/useValidateForm"
-import { useState } from 'react';
+
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Auth from "../../../service/auth";
 import { updateAction } from "../../../redux/actions/authAction";
+import { useForm } from "core/useform/useForm";
+import { ErrorMessage } from "core/useform/ErrorMessage";
 
 
 export default function Info() {
-    let [info, setInfo] = useState(null)
-    let { login } = useSelector(store => store.authReducer)
-    let dispatch = useDispatch()
+    let { login, status } = useSelector(store => store.authReducer)
 
-    let { form, error, inputChange, check } = useValidateForm({
+    let yearNow = new Date().getFullYear()
+    const [day, setDay] = useState()
+    const [month, setMonth] = useState(1)
+    const [year, setYear] = useState(yearNow)
+
+
+    let { register, handleSubmit, error } = useForm({
         first_name: login.first_name,
         last_name: login.last_name,
         email: login.email,
-        password: '',
+        confirm_password: '',
 
     }, {
-        rules: {
-            first_name: {
-                required: true,
-                pattern: 'name',
-                namemin: 2,
-                namemax: 32
-            },
-            last_name: {
-                required: true,
-                pattern: 'name',
-                namemin: 2,
-                namemax: 32
-            },
-            // email: {
-            //     required: true,
-            //     pattern: 'email'
-            // },
-            password: {
-                required: true,
-                pattern: 'password',
-                min: 8,
-                max: 32
-            },
-
-        },
         message: {
             first_name: {
-                required: 'Name cannot be blank. Please enter your fullname!',
+                required: 'Name cannot be blank. Please enter your Firstname!',
                 pattern: '()[]{}*&^%$#@! and numbers are not allowed!'
             },
             last_name: {
-                required: 'Name cannot be blank. Please enter your fullname!',
+                required: 'Name cannot be blank. Please enter your Lastname!',
                 pattern: '()[]{}*&^%$#@! and numbers are not allowed!'
             },
-            // email: {
-            //     required: 'Email cannot be blank. Please enter your email!',
-            //     pattern: 'Please enter a valid email address. Ex: example@gmail.com...'
-            // },
-            password: {
-                required: 'Password cannot be blank. Please enter your password!',
-                pattern: 'Your password must contain number, special characters, uppercase...'
+            confirm_password: {
+                required: 'Confirm your password!',
             },
         }
     })
 
-    async function onSubmit(e) {
-        e.preventDefault();
-        let errorObj = check()
+    let dispatch = useDispatch()
 
-        setInfo('Something went wrong. We were unable to send your request!')
-
-        if (Object.keys(errorObj).length === 0) {
-            let res = await Auth.update(form)
-            console.log(form)
-            console.log(res)
-            if (res.data) {
-                console.log(res.data);
-                dispatch(updateAction(res.data))
-
-            }
-            setInfo('Thank you! Your request has been submitted.')
-        }
-
+    function infoSubmit(form) {
+        dispatch(updateAction(form))
     }
+
+    function dateChange(e) {
+        let name = e.target.name;
+        let value = e.target.value;
+
+        if (name === 'year') setYear(parseInt(value))
+        if (name === 'month') setMonth(parseInt(value))
+        if (name === 'day') setDay(parseInt(value))
+    }
+
+    let date = new Date(year, month, 0)
+    let dayArray = date.getDate()
 
 
     return (
 
         <div className="col-12 col-md-9 col-lg-8 offset-lg-1">
             {/* Form */}
-            <form>
+            <form onSubmit={handleSubmit(infoSubmit)}>
                 <div className="row">
                     <div className="col-12 col-md-6">
                         {/* Email */}
@@ -95,10 +68,8 @@ export default function Info() {
                             <label htmlFor="accountFirstName">
                                 First Name *
                             </label>
-                            <input name="first_name" value={form.first_name} onChange={inputChange} className="form-control form-control-sm" id="accountFirstName" type="text" placeholder="First Name *" defaultValue={form.first_name} required />
-                            {
-                                error.first_name && <p className="error-text">{error.first_name}</p>
-                            }
+                            <input {...register('first_name', { required: true, pattern: 'name' })} className="form-control form-control-sm" type="text" />
+                            <ErrorMessage error={error.first_name} />
                         </div>
                     </div>
                     <div className="col-12 col-md-6">
@@ -107,49 +78,38 @@ export default function Info() {
                             <label htmlFor="accountLastName">
                                 Last Name *
                             </label>
-                            <input name="last_name" value={form.last_name} onChange={inputChange} className="form-control form-control-sm" id="accountLastName" type="text" placeholder="Last Name *" defaultValue={form.last_name} required />
-                            {
-                                error.last_name && <p className="error-text">{error.last_name}</p>
-                            }
+                            <input {...register('last_name', { required: true, pattern: 'name' })} className="form-control form-control-sm" type="text" />
+                            <ErrorMessage error={error.last_name} />
                         </div>
                     </div>
                     <div className="col-12">
                         {/* Email */}
                         <div className="form-group">
                             <label htmlFor="accountEmail">
-                                Email Address *
+                                Email Address
                             </label>
-                            <input name="email" value={form.email} onChange={inputChange} disabled className="form-control form-control-sm" id="accountEmail" type="email" placeholder="Email Address *" defaultValue={form.email} required />
-                            {/* {
-                                error.email && <p className="error-text">{error.email}</p>
-                            } */}
+                            <input {...register('email')} disabled className="form-control form-control-sm" type="email" />
                         </div>
                     </div>
-
-
-
-
-
                     {/* Password */}
                     <div className="col-12 col-md-6">
                         {/* Password */}
                         <div className="form-group">
                             <label htmlFor="accountPassword">
-                                Current Password *
+                                Current Password
                             </label>
-                            <input className="form-control form-control-sm" id="accountPassword" type="password" placeholder="Current Password *" required />
+                            <input {...register('password')} className="form-control form-control-sm" type="password" />
+                            <ErrorMessage error={error.password} />
                         </div>
                     </div>
                     <div className="col-12 col-md-6">
                         {/* Password */}
                         <div className="form-group">
                             <label htmlFor="AccountNewPassword">
-                                New Password *
+                                Confirm Password *
                             </label>
-                            <input name="password" value={form.password} onChange={inputChange} className="form-control form-control-sm" id="AccountNewPassword" type="password" placeholder="New Password *" required />
-                            {
-                                error.password && <p className="error-text">{error.password}</p>
-                            }
+                            <input {...register('confirm_password', { required: true, match: 'password', enabled: 'password' })} className="form-control form-control-sm" type="password" />
+                            <ErrorMessage error={error.confirm_password} />
                         </div>
                     </div>
 
@@ -169,10 +129,10 @@ export default function Info() {
                                     <label className="sr-only" htmlFor="accountDate">
                                         Date
                                     </label>
-                                    <select className="custom-select custom-select-sm" id="accountDate">
-                                        <option>10</option>
-                                        <option>11</option>
-                                        <option selected>12</option>
+                                    <select className="custom-select custom-select-sm" id="accountDate" name="day" value={day} onChange={dateChange} >
+                                        {
+                                            [...Array(dayArray)].map((e, i) => <option value={i + 1} key={i}>{i + 1}</option>)
+                                        }
                                     </select>
                                 </div>
                                 <div className="col">
@@ -180,10 +140,10 @@ export default function Info() {
                                     <label className="sr-only" htmlFor="accountMonth">
                                         Month
                                     </label>
-                                    <select className="custom-select custom-select-sm" id="accountMonth">
-                                        <option>January</option>
-                                        <option selected>February</option>
-                                        <option>March</option>
+                                    <select className="custom-select custom-select-sm" id="accountMonth" name="month" value={month} onChange={dateChange}>
+                                        {
+                                            [...Array(12)].map((e, i) => <option value={i + 1} key={i}>{i + 1}</option>)
+                                        }
                                     </select>
                                 </div>
                                 <div className="col-auto">
@@ -191,10 +151,10 @@ export default function Info() {
                                     <label className="sr-only" htmlFor="accountYear">
                                         Year
                                     </label>
-                                    <select className="custom-select custom-select-sm" id="accountYear">
-                                        <option>1990</option>
-                                        <option selected>1991</option>
-                                        <option>1992</option>
+                                    <select className="custom-select custom-select-sm" id="accountYear" name="year" value={year} onChange={dateChange}>
+                                        {
+                                            [...Array(50)].map((e, i) => <option value={yearNow - i} key={i}>{yearNow - i}</option>)
+                                        }
                                     </select>
                                 </div>
                             </div>
@@ -216,8 +176,8 @@ export default function Info() {
                     </div>
                     <div className="col-12">
                         {/* Button */}
-                        <button onClick={onSubmit} className="btn btn-dark" type="submit">Save Changes</button>
-                        {info && <p className="error-text">{info}</p>}
+                        <button className="btn btn-dark" type="submit">Save Changes</button>
+                        <ErrorMessage error={status} />
                     </div>
                 </div>
             </form>

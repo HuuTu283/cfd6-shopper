@@ -1,20 +1,38 @@
+//chua update
+
 import { useDispatch, useSelector } from "react-redux"
+import useValidateForm from "../../../core/useValidateForm"
 import Auth from '../../../service/auth';
 import { loginAction } from '../../../redux/actions/authAction';
 import { useState } from "react";
 import { Redirect } from 'react-router-dom';
-import { ErrorMessage, useForm } from "core/useform";
 
 
 
 
-export default function LogIn() {
-    let { login, status } = useSelector(store => store.authReducer)
+export default function SignIn() {
+    const [loginError, setLoginError] = useState(null)
+    let { login } = useSelector(store => store.authReducer)
 
-    let { register, handleSubmit, error } = useForm({
+
+    let { form, error, inputChange, check } = useValidateForm({
         username: '',
         password: ''
+
     }, {
+        rules: {
+
+            username: {
+                required: true,
+                pattern: 'email'
+            },
+            password: {
+                required: true,
+                // pattern: 'password',
+                min: 8,
+                max: 32
+            }
+        },
         message: {
             username: {
                 required: 'Email cannot be blank. Please enter your email!',
@@ -25,16 +43,26 @@ export default function LogIn() {
                 pattern: 'Your password must contain number, special characters, uppercase...'
             },
         },
+
     })
-
-
 
     let dispatch = useDispatch();
 
-    function formSubmit(form) {
-        dispatch(loginAction(form))
-    }
+    async function loginHandle(e) {
+        e.preventDefault();
+        let errorObj = check()
 
+
+        if (Object.keys(errorObj).length === 0) {
+            let res = await Auth.login(form)
+            if (res.data) {
+                dispatch(loginAction(res.data))
+
+            } else if (res.error) {
+                setLoginError(res.error)
+            }
+        }
+    }
 
     if (login) {
         return <Redirect to="/tai-khoan" />
@@ -47,9 +75,11 @@ export default function LogIn() {
                 <div className="card-body">
                     {/* Heading */}
                     <h6 className="mb-7">Returning Customer</h6>
-                    <ErrorMessage error={status} />
+                    {loginError && <p className="error-text">{loginError}</p>}
+
+
                     {/* Form */}
-                    <form onSubmit={handleSubmit(formSubmit)}>
+                    <form>
                         <div className="row">
                             <div className="col-12">
                                 {/* Email */}
@@ -57,8 +87,10 @@ export default function LogIn() {
                                     <label className="sr-only" htmlFor="loginEmail">
                                         Email Address *
                                     </label>
-                                    <input className="form-control form-control-sm" type="email" placeholder="Email Address *" {...register('username', { required: true, pattern: 'email' })} />
-                                    <ErrorMessage error={error.username} />
+                                    <input name="username" value={form.username} onChange={inputChange} className="form-control form-control-sm" id="loginEmail" type="email" placeholder="Email Address *" required />
+                                    {
+                                        error.username && <p className="error-text">{error.username}</p>
+                                    }
                                 </div>
                             </div>
                             <div className="col-12">
@@ -67,16 +99,12 @@ export default function LogIn() {
                                     <label className="sr-only" htmlFor="loginPassword">
                                         Password *
                                     </label>
-                                    <input className="form-control form-control-sm" type="password" placeholder="Password *" {...register('password', { required: true, min: 8, max: 32 })} />
-                                    <ErrorMessage error={error.password} />
+                                    <input value={form.password} name="password" onChange={inputChange} className="form-control form-control-sm" id="loginPassword" type="password" placeholder="Password *" required />
+                                    {
+                                        error.password && <p className="error-text">{error.password}</p>
+                                    }
                                 </div>
                             </div>
-
-
-
-
-
-
                             <div className="col-12 col-md">
                                 {/* Remember */}
                                 <div className="form-group">
@@ -97,7 +125,7 @@ export default function LogIn() {
                             </div>
                             <div className="col-12">
                                 {/* Button */}
-                                <button className="btn btn-sm btn-dark" type="submit" >
+                                <button onClick={loginHandle} className="btn btn-sm btn-dark" type="submit" >
                                     Sign In
                                 </button>
                             </div>

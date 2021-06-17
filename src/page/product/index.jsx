@@ -1,7 +1,41 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { useParams } from 'react-router-dom';
 import Features from '../../components/Features';
+import ProductApi from '../../service/productApi';
+import { currency } from 'utils'
+
+
+let $ = window.$
 
 export default function ProductPage() {
+
+    // let ref = useRef();
+    // useEffect(() => {
+    //     $(ref.current).flickity({
+    //         draggable: false,
+    //         fade: true,
+    //         contain: true,
+    //         wrapAround: false
+    //     });
+    // }, []);
+
+    let { slug } = useParams()
+    const [product, setProduct] = useState()
+
+
+    useEffect(async () => {
+        let res = await ProductApi.detail(slug)
+        if (res.data) {
+            const randomElement = Math.floor(Math.random() * res.data.length);
+
+            setProduct(res.data[randomElement])
+        }
+    }, [slug])
+
+
+    let real_price_text = currency(product?.real_price)
+    let price_text = currency(product?.price)
+
     return (
         <>
             {/* BREADCRUMB */}
@@ -36,42 +70,36 @@ export default function ProductPage() {
                                     {/* Card */}
                                     <div className="card">
                                         {/* Badge */}
-                                        <div className="badge badge-primary card-badge text-uppercase">
-                                            Sale
-                                        </div>
+                                        {
+                                            product?.discount_rate ? <div className="badge badge-primary card-badge text-uppercase ">
+                                                - {product.discount_rate}%
+                                            </div> : null
+                                        }
                                         {/* Slider */}
                                         <div className="mb-4" data-flickity="{&quot;draggable&quot;: false, &quot;fade&quot;: true}" id="productSlider">
-                                            {/* Item */}
-                                            <a href="/img/products/product-7.jpg" data-fancybox>
-                                                <img src="/img/products/product-7.jpg" alt="..." className="card-img-top" />
-                                            </a>
-                                            {/* Item */}
-                                            <a href="/img/products/product-122.jpg" data-fancybox>
-                                                <img src="/img/products/product-122.jpg" alt="..." className="card-img-top" />
-                                            </a>
-                                            {/* Item */}
-                                            <a href="/img/products/product-146.jpg" data-fancybox>
-                                                <img src="/img/products/product-146.jpg" alt="..." className="card-img-top" />
-                                            </a>
+                                            {
+                                                product?.images.map((e, i) => (
+                                                    <a href={e.large_url} data-fancybox>
+                                                        <img src={e.medium_url} alt="..." className="card-img-top" />
+                                                    </a>
+                                                ))
+                                            }
+
+
                                         </div>
                                     </div>
                                     {/* Slider */}
                                     <div className="flickity-nav mx-n2 mb-10 mb-md-0" data-flickity="{&quot;asNavFor&quot;: &quot;#productSlider&quot;, &quot;contain&quot;: true, &quot;wrapAround&quot;: false}">
                                         {/* Item */}
-                                        <div className="col-12 px-2" style={{ maxWidth: '113px' }}>
-                                            {/* Image */}
-                                            <div className="embed-responsive embed-responsive-1by1 bg-cover" style={{ backgroundImage: 'url(/img/products/product-7.jpg)' }} />
-                                        </div>
-                                        {/* Item */}
-                                        <div className="col-12 px-2" style={{ maxWidth: '113px' }}>
-                                            {/* Image */}
-                                            <div className="embed-responsive embed-responsive-1by1 bg-cover" style={{ backgroundImage: 'url(/img/products/product-122.jpg)' }} />
-                                        </div>
-                                        {/* Item */}
-                                        <div className="col-12 px-2" style={{ maxWidth: '113px' }}>
-                                            {/* Image */}
-                                            <div className="embed-responsive embed-responsive-1by1 bg-cover" style={{ backgroundImage: 'url(/img/products/product-146.jpg)' }} />
-                                        </div>
+
+                                        {
+                                            product?.images.map((e, i) => (
+                                                <div className="col-12 px-2" style={{ maxWidth: '113px' }}>
+                                                    {/* Image */}
+                                                    <div className="embed-responsive embed-responsive-1by1 bg-cover" style={{ backgroundImage: `url(${e.medium_url})` }} />
+                                                </div>
+                                            ))
+                                        }
                                     </div>
                                 </div>
                                 <div className="col-12 col-md-6 pl-lg-10">
@@ -79,7 +107,7 @@ export default function ProductPage() {
                                     <div className="row mb-1">
                                         <div className="col">
                                             {/* Preheading */}
-                                            <a className="text-muted" href="shop.html">Sneakers</a>
+                                            <a className="text-muted" href="shop.html">{product?.brand_name}</a>
                                         </div>
                                         <div className="col-auto">
                                             {/* Rating */}
@@ -106,32 +134,41 @@ export default function ProductPage() {
                                         </div>
                                     </div>
                                     {/* Heading */}
-                                    <h3 className="mb-2">Leather Sneakers</h3>
+                                    <h3 className="mb-2">{product?.name}</h3>
                                     {/* Price */}
                                     <div className="mb-7">
-                                        <span className="font-size-lg font-weight-bold text-gray-350 text-decoration-line-through">$115.00</span>
-                                        <span className="ml-1 font-size-h5 font-weight-bolder text-primary">$85.00</span>
-                                        <span className="font-size-sm ml-1">(In Stock)</span>
+                                        <span className="font-size-lg font-weight-bold text-gray-350 text-decoration-line-through">{price_text}</span>
+                                        <span className="ml-1 font-size-h5 font-weight-bolder text-primary">{real_price_text}</span>
+                                        <span className="font-size-sm ml-1">({product?.stock_item.qty > 0 ? 'Còn hàng' : 'Hết hàng'})</span>
                                     </div>
                                     {/* Form */}
+
+                                    {
+                                        product?.configurable_options?.map((value, index) => (
+                                            <div className="form-group" key={index}>
+                                                {/* Label */}
+                                                <p className="mb-5">
+                                                    {value.name} : {value.values.map((e, i) => <strong id="colorCaption" key={i}>{e.label}</strong>)}
+                                                </p>
+                                            </div>
+                                        ))
+                                    }
                                     <form>
                                         <div className="form-group">
-                                            {/* Label */}
-                                            <p className="mb-5">
-                                                Color: <strong id="colorCaption">White</strong>
-                                            </p>
                                             {/* Radio */}
                                             <div className="mb-8 ml-n1">
+
+
                                                 <div className="custom-control custom-control-inline custom-control-img">
                                                     <input type="radio" className="custom-control-input" id="imgRadioOne" name="imgRadio" data-toggle="form-caption" data-target="#colorCaption" defaultValue="White" defaultChecked />
                                                     <label className="custom-control-label" htmlFor="imgRadioOne">
-                                                        <span className="embed-responsive embed-responsive-1by1 bg-cover" style={{ backgroundImage: 'url(/img/products/product-7.jpg)' }} />
+                                                        <span className="embed-responsive embed-responsive-1by1 bg-cover" style={{ backgroundImage: `url(${product?.images[0].medium_url})` }} />
                                                     </label>
                                                 </div>
                                                 <div className="custom-control custom-control-inline custom-control-img">
                                                     <input type="radio" className="custom-control-input" id="imgRadioTwo" name="imgRadio" data-toggle="form-caption" data-target="#colorCaption" defaultValue="Black" />
                                                     <label className="custom-control-label" htmlFor="imgRadioTwo">
-                                                        <span className="embed-responsive embed-responsive-1by1 bg-cover" style={{ backgroundImage: 'url(/img/products/product-49.jpg)' }} />
+                                                        <span className="embed-responsive embed-responsive-1by1 bg-cover" style={{ backgroundImage: `url(${product?.images[0].medium_url})` }} />
                                                     </label>
                                                 </div>
                                             </div>
@@ -258,6 +295,7 @@ export default function ProductPage() {
             </section>
 
             {/* DESCRIPTION */}
+
             <section className="pt-11">
                 <div className="container">
                     <div className="row">
@@ -282,12 +320,8 @@ export default function ProductPage() {
                                             <div className="row">
                                                 <div className="col-12">
                                                     {/* Text */}
-                                                    <p className="text-gray-500">
-                                                        Won't herb first male seas, beast. Let upon, female upon third fifth every. Man subdue rule
-                                                        after years herb after
-                                                        form. And image may, morning. Behold in tree day sea that together cattle whose. Fifth gathering
-                                                        brought
-                                                        bearing. Abundantly creeping whose. Beginning form have void two. A whose.
+                                                    <p className="text-gray-500" dangerouslySetInnerHTML={{ __html: product?.description }}>
+                                                        {/* {product?.description} */}
                                                     </p>
                                                 </div>
                                                 <div className="col-12 col-md-6">
