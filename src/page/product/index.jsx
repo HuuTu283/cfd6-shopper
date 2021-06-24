@@ -29,6 +29,7 @@ export default function ProductPage() {
             const randomElement = Math.floor(Math.random() * res.data.length);
 
             setProduct(res.data[randomElement])
+            console.log(res)
         }
     }, [slug])
 

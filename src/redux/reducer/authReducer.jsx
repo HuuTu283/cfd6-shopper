@@ -52,8 +52,6 @@ export default function authReducer(state = initState, action) {
         default:
             return state
     }
-    return state
-
 }
 
 // let { action, reducer, TYPE } = reduxToolkit({

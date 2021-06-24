@@ -1,0 +1,25 @@
+{
+    "data": [
+        {
+            "name": "Nơi Tú ở",
+            "address": "297/6 Đ. Lê Văn Thịnh nuối dài, Cát Lái, Quận 2, Thành phố Hồ Chí Minh 70000",
+            "phone": "0902620835",
+            "time": "09:00h - 20:00h T2-CN",
+            "google_map": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.448346875867!2d106.76756766897437!3d10.776932339609958!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317525d2e0e85d09%3A0xd254a361d3b6e84!2zMjk3IMSQLiBMw6ogVsSDbiBUaOG7i25oIG514buRaSBkw6BpLCBDw6F0IEzDoWksIFF14bqtbiAyLCBUaMOgbmggcGjhu5EgSOG7kyBDaMOtIE1pbmgsIFZpZXRuYW0!5e0!3m2!1sen!2sus!4v1624511690170!5m2!1sen!2sus"
+        },
+        {
+            "name": "Nơi Tú quẫy",
+            "address": "99 Nguyễn Thị Minh Khai, Phường Phạm Ngũ Lão, Quận 1, Thành phố Hồ Chí Minh 700000",
+            "phone": "+84977502502",
+            "time": "22:00h - 03:00h T2-CN",
+            "google_map": "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15678.050753340181!2d106.6883371!3d10.7719898!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xe50d3accd1c91041!2sKASHO!5e0!3m2!1sen!2s!4v1624465106872!5m2!1sen!2s"
+        },
+        {
+            "name": "Nơi Tú học",
+            "address": "11 Phan Kế Bính, Đa Kao, Quận 1, Thành phố Hồ Chí Minh 70000",
+            "phone": "098 959 69 13",
+            "time": "19:00h - 22:00h T2-CN",
+            "google_map": "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15677.124818887973!2d106.6993206!3d10.7897613!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x9ed4e323c103e3d1!2sCFD!5e0!3m2!1sen!2s!4v1624465231294!5m2!1sen!2s"
+        }
+    ]
+}

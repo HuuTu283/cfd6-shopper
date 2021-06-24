@@ -4,3 +4,9 @@
     width: 100% !important;
     font-size: 13px;
 }
+
+.google-map {
+    &.active {
+        background-color: #f2f2f2;
+    }
+}

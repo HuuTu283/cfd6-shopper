@@ -1,31 +1,33 @@
+import React from "react";
+
 import MainLayout from './layout/MainLayout';
 
 
-import Home from "./page/home";
-import AboutPage from './page/about';
-import ShopPage from "./page/shop";
-import StoreLocator from "./page/storelocator";
-import ShipvReturn from "./page/ship&return";
-import Faq from "./page/faq";
-import ContactPage from "./page/contact";
-import ShoppingCart from "./page/shoppingcart";
-import ProductPage from "./page/product";
-import OrderCompleted from "./page/ordercompleted";
-import CheckoutPage from "./page/checkout";
-import AuthPage from "./page/auth";
-import AccountPage from "./page/Account";
-import Error404 from "./page/404";
-import ComingSoon from "page/comingsoon";
+const Home = React.lazy(() => import("./page/home"));
+const AboutPage = React.lazy(() => import('./page/about'));
+const ShopPage = React.lazy(() => import("./page/shop"));
+const StoreLocator = React.lazy(() => import("./page/storelocator"));
+const ShipvReturn = React.lazy(() => import("./page/ship&return"));
+const Faq = React.lazy(() => import("./page/faq"));
+const ContactPage = React.lazy(() => import("./page/contact"));
+const ShoppingCart = React.lazy(() => import("./page/shoppingcart"));
+const ProductPage = React.lazy(() => import("./page/product"));
+const OrderCompleted = React.lazy(() => import("./page/ordercompleted"));
+const CheckoutPage = React.lazy(() => import("./page/checkout"));
+const AuthPage = React.lazy(() => import("./page/auth"));
+const AccountPage = React.lazy(() => import("./page/Account"));
+const Error404 = React.lazy(() => import("./page/404"));
+const ComingSoon = React.lazy(() => import("page/comingsoon"));
 
 
-import Orders from "page/Account/components/Orders";
-import OrderDetails from "page/Account/components/OrderDetails";
-import Wishlist from "page/Account/components/Wishlist";
-import Address from "page/Account/components/Address";
-import AddressEdit from "page/Account/components/AddressEdit";
-import PaymentMethods from "page/Account/components/PaymentMethods";
-import PaymentEdit from "page/Account/components/PaymentEdit";
-import Info from "page/Account/components/Info";
+const Orders = React.lazy(() => import("page/Account/components/Orders"));
+const OrderDetails = React.lazy(() => import("page/Account/components/OrderDetails"));
+const Wishlist = React.lazy(() => import("page/Account/components/Wishlist"));
+const Address = React.lazy(() => import("page/Account/components/Address"));
+const AddressEdit = React.lazy(() => import("page/Account/components/AddressEdit"));
+const PaymentMethods = React.lazy(() => import("page/Account/components/PaymentMethods"));
+const PaymentEdit = React.lazy(() => import("page/Account/components/PaymentEdit"));
+const Info = React.lazy(() => import("page/Account/components/Info"));
 
 let routes = [
     {

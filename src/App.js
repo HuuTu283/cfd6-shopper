@@ -11,6 +11,7 @@ import vi from './translate/vi.json'
 import { RouteWithSubRoutes } from './core/routerConfig';
 
 import routes from "routes";
+import { Suspense } from "react";
 
 
 let translate = {
@@ -22,12 +23,14 @@ function App() {
     <TranslateProvider translate={translate}>
       <Provider store={store} >
         <BrowserRouter>
-          <Switch>
-            {routes.map((route, i) => (
-              <RouteWithSubRoutes key={i} {...route} />
-            ))}
+          <Suspense fallback={'loading....'}>
+            <Switch>
+              {routes.map((route, i) => (
+                <RouteWithSubRoutes key={i} {...route} />
+              ))}
+            </Switch>
+          </Suspense>
 
-          </Switch>
         </BrowserRouter>
       </Provider>
     </TranslateProvider>
