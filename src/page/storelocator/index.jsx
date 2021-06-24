@@ -4,23 +4,27 @@ import mapApi from '../../service/mapApi';
 
 
 export default function StoreLocator() {
-    let [list, setList] = useState([])
+    let [list, setList] = useState({
+        listMap: []
+    })
     let [mapActive, setMapActive] = useState(0)
     let [map, setMap] = useState('https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.448346875867!2d106.76756766897437!3d10.776932339609958!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317525d2e0e85d09%3A0xd254a361d3b6e84!2zMjk3IMSQLiBMw6ogVsSDbiBUaOG7i25oIG514buRaSBkw6BpLCBDw6F0IEzDoWksIFF14bqtbiAyLCBUaMOgbmggcGjhu5EgSOG7kyBDaMOtIE1pbmgsIFZpZXRuYW0!5e0!3m2!1sen!2sus!4v1624511690170!5m2!1sen!2sus')
 
     useEffect(async () => {
         let res = await mapApi.location()
-        if (res.data) {
-            setList(res.data)
+        console.log(res)
+        if (res) {
+            setList({
+                listMap: res
+            })
         }
     }, [])
+    console.log(list?.listMap?.data);
 
 
-    console.log(list)
-
-    function mapChange(value, index) {
+    function mapChange(index) {
         setMapActive(index)
-        setMap(list[index].google_map)
+        setMap(list.listMap.data[index].google_map)
     }
 
 
@@ -74,12 +78,11 @@ export default function StoreLocator() {
                     <div className="row">
                         <div className="col-12 col-md-5 col-lg-4">
                             {/* Card */}
-                            <div className="card card-xl h-md-0 minh-md-100 mb-10 mb-md-0 shadow" data-simplebar style={{ overflow: "auto" }}>
+                            <div className="card card-xl h-md-0 minh-md-100 mb-10 mb-md-0 shadow" style={{ overflow: "auto" }}>
 
-                                {
-                                    list.map((e, i) =>
+                                {/* {
+                                    list?.listMap?.data.map((e, i) =>
                                         <div className={`card-body google-map ${mapActive === i ? "active" : ""}`} key={i} onClick={mapChange.bind(null, i)}>
-                                            {/* Heading */}
                                             <p className="font-weight-bold">
                                                 {e.name}
                                             </p>
@@ -96,7 +99,7 @@ export default function StoreLocator() {
                                             </p>
                                         </div>
                                     )
-                                }
+                                } */}
 
                             </div>
                         </div>
